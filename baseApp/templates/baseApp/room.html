@@ -1,15 +1,14 @@
-<!DOCTYPE html>
 {% extends 'main.html' %} {% block content %}
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>{{room.topic.name}} Room</title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="" />
-  </head>
-  <body>
+
+<style>
+  .room-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+  }
+</style>
+
+<div class="room-container">
+  <div>
     <h2>{{room.name}}</h2>
     <p>{{room.description}}</p>
     <div class="comment-wrapper">
@@ -17,7 +16,10 @@
       <hr />
       {% for message in room_messages %}
       <div>
-        <small>@{{message.user}} {{message.cretaed | timesince }} ago </small>
+        {% if request.user == message.user %}
+        <a href="{% url 'delete-message' message.id %}">Delete</a>
+        {% endif %}
+        <small>@{{message.user}} {{message.cretaed | timesince }} ago</small>
         <p>{{message.body}}</p>
         <hr />
       </div>
@@ -35,6 +37,16 @@
       </form>
     </div>
     {% endif %}
-  </body>
-</html>
+  </div>
+  <div>
+    <h3>Participants</h3>
+    <hr />
+    {% for user in participants %}
+    <div>
+      <p>@{{user.username }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 {% endblock content %}
